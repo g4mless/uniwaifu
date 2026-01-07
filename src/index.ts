@@ -106,8 +106,9 @@ new Elysia()
     message: "Unified Waifu API Proxy",
     providers: Object.keys(providers),
   }))
-  .get("/get", async () => {
+  .get("/get", async ({ query, request }) => {
     const image = await fetchRandomImage();
+    const { proxied } = query
 
     if (!image) {
       return new Response(
@@ -121,9 +122,32 @@ new Elysia()
       );
     }
 
+    let imageUrl = image.url;
+    if (proxied === "true") {
+      const origin = new URL(request.url).origin;
+      imageUrl = `${origin}/image?src=${encodeURIComponent(image.url)}`;
+    }
     return {
-      url: image.url
+      url: imageUrl
     };
+  })
+
+  .get("/image", async ({ query }) => {
+    const { src } = query as { src: string };
+    
+    if (!src) {
+      return new Response("Missing src parameter", { status: 400 });
+    }
+
+    try {
+      const response = await fetch(decodeURIComponent(src));
+      return new Response(response.body, {
+        headers: { "Content-Type": response.headers.get("content-type") || "image/jpeg" || "image/png" }
+      });
+    } catch (error) {
+      console.error("Proxy error:", error);
+      return new Response("Failed to fetch image", { status: 500 });
+    }
   })
   .listen(3000, () => {
     console.log(`🦊 Elysia is running at http://localhost:3000`);
