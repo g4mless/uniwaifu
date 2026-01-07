@@ -20,6 +20,13 @@ interface WaifuPicsResponse {
   [key: string]: any
 }
 
+interface NekosBestResponse {
+  results: Array<{
+    url: string
+    [key: string]: any
+  }>
+}
+
 // Provider functions
 export const providers = {
   safebooru: async (): Promise<AnimeImage | null> => {
@@ -72,7 +79,23 @@ export const providers = {
       console.error("Waifu.pics error:", error)
       return null
     }
-  }
+  },
+  nekosbest: async (): Promise<AnimeImage | null> => {
+    try {
+      const response = await fetch("https://nekos.best/api/v2/waifu")
+      const data = (await response.json()) as NekosBestResponse
+
+      if (data.results && data.results.length > 0 && data.results[0].url) {
+        return {
+          url: data.results[0].url
+        }
+      }
+      return null
+    } catch (error) {
+      console.error("Waifu.im error:", error)
+      return null
+    }
+  },
 }
 
 export const getRandomProvider = (): string => {
