@@ -17,6 +17,11 @@ interface WaifuImResponse {
   }>;
 }
 
+interface WaifuPicsResponse {
+  url: string;
+  [key: string]: any;
+}
+
 // Provider functions
 const providers = {
   safebooru: async (): Promise<AnimeImage | null> => {
@@ -54,6 +59,22 @@ const providers = {
       return null;
     }
   },
+  waifupics: async (): Promise<AnimeImage | null> => {
+    try {
+      const response = await fetch("https://api.waifu.pics/sfw/waifu")
+      const data = (await response.json()) as WaifuPicsResponse
+
+      if (data.url) {
+        return {
+          url: data.url
+        }
+      }
+      return null
+    } catch (error) {
+      console.error("Waifu.pics error:", error)
+      return null
+    }
+  }
 };
 
 const getRandomProvider = (): string => {
@@ -78,6 +99,7 @@ const fetchRandomImage = async (): Promise<AnimeImage | null> => {
   return result;
 };
 
+// endpoint
 new Elysia()
   .get("/", () => ({
     status: "ok",
@@ -105,5 +127,5 @@ new Elysia()
   })
   .listen(3000, () => {
     console.log(`🦊 Elysia is running at http://localhost:3000`);
-    console.log(`📡 Try: http://localhost:3000/anime`);
+    console.log(`Try: http://localhost:3000/get`);
   });
