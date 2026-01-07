@@ -1,7 +1,8 @@
 import { Elysia } from "elysia"
 import { providers, fetchRandomImage } from "./providers"
+import { cors } from '@elysiajs/cors'
 
-new Elysia()
+new Elysia().use(cors())
   .get("/", () => ({
     status: "ok",
     message: "Unified Waifu API Proxy",
