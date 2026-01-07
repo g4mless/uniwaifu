@@ -2,7 +2,7 @@ import { Elysia } from "elysia"
 import { providers, fetchRandomImage } from "./providers"
 import { cors } from '@elysiajs/cors'
 
-new Elysia().use(cors())
+export default new Elysia().use(cors())
   .get("/", () => ({
     status: "ok",
     message: "Unified Waifu API Proxy",
@@ -50,8 +50,4 @@ new Elysia().use(cors())
       console.error("Proxy error:", error)
       return new Response("Failed to fetch image", { status: 500 })
     }
-  })
-  .listen(3000, () => {
-    console.log(`🦊 Elysia is running at http://localhost:3000`)
-    console.log(`Try: http://localhost:3000/get`)
   })
