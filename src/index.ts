@@ -1,8 +1,11 @@
 import { Elysia } from "elysia"
+import { CloudflareAdapter } from "elysia/adapter/cloudflare-worker"
 import { providers, fetchRandomImage } from "./providers"
 import { cors } from '@elysiajs/cors'
 
-export default new Elysia().use(cors())
+export default new Elysia({
+  adapter: CloudflareAdapter
+}).use(cors())
   .get("/", () => ({
     status: "ok",
     message: "Unified Waifu API Proxy",
@@ -51,3 +54,4 @@ export default new Elysia().use(cors())
       return new Response("Failed to fetch image", { status: 500 })
     }
   })
+  .compile()

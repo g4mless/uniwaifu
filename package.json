@@ -3,14 +3,18 @@
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.4.1",
     "elysia": "latest"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "@cloudflare/workers-types": "latest",
+    "bun-types": "latest",
+    "wrangler": "latest"
   },
   "module": "src/index.js"
 }
